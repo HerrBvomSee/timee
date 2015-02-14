@@ -150,9 +150,11 @@ End
 		    TimeTracking
 		    if trackingActive = True Then
 		      item.Caption = "Stop"
-		    else 
+		    else
 		      item.Caption = "Start"
 		    End If
+		  Case "HelpToolButton"
+		    AboutDialog.ShowModal
 		  End Select
 		End Sub
 	#tag EndEvent
@@ -367,11 +369,6 @@ End
 		Group="Appearance"
 		InitialValue="Untitled"
 		Type="String"
-	#tag EndViewProperty
-	#tag ViewProperty
-		Name="trackingBegin"
-		Group="Behavior"
-		Type="Integer"
 	#tag EndViewProperty
 	#tag ViewProperty
 		Name="Visible"

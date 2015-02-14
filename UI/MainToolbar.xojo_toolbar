@@ -4,16 +4,18 @@ Begin Toolbar MainToolbar
 		Caption = "Start"
 		HelpTag = ""
 		Style = 2
+		Icon = 1704988755
 	End
 	Begin ToolButton ToolItem1
 		Caption = "Untitled"
 		HelpTag = ""
 		Style = 6
 	End
-	Begin ToolButton HelpToolItem
-		Caption = "Help"
+	Begin ToolButton HelpToolButton
+		Caption = "About"
 		HelpTag = ""
 		Style = 0
+		Icon = 679225221
 	End
 End
 #tag EndToolbar
