@@ -25,13 +25,13 @@ Begin Window AboutDialog
    Resizeable      =   False
    Title           =   "Untitled"
    Visible         =   True
-   Width           =   371
+   Width           =   397
    Begin ImageWell ImageWell1
       AutoDeactivate  =   True
       Enabled         =   True
-      Height          =   55
+      Height          =   87
       HelpTag         =   ""
-      Image           =   679225221
+      Image           =   882889991
       Index           =   -2147483648
       InitialParent   =   ""
       Left            =   20
@@ -46,7 +46,7 @@ Begin Window AboutDialog
       TabStop         =   True
       Top             =   20
       Visible         =   True
-      Width           =   59
+      Width           =   85
    End
    Begin Label Label1
       AutoDeactivate  =   True
@@ -59,7 +59,7 @@ Begin Window AboutDialog
       Index           =   -2147483648
       InitialParent   =   ""
       Italic          =   False
-      Left            =   91
+      Left            =   117
       LockBottom      =   False
       LockedInPosition=   False
       LockLeft        =   True
@@ -93,7 +93,7 @@ Begin Window AboutDialog
       Index           =   -2147483648
       InitialParent   =   ""
       Italic          =   False
-      Left            =   91
+      Left            =   117
       LockBottom      =   False
       LockedInPosition=   False
       LockLeft        =   True
@@ -110,7 +110,7 @@ Begin Window AboutDialog
       TextFont        =   "System"
       TextSize        =   0.0
       TextUnit        =   0
-      Top             =   52
+      Top             =   54
       Transparent     =   False
       Underline       =   False
       Visible         =   True
@@ -139,7 +139,7 @@ Begin Window AboutDialog
       TabIndex        =   3
       TabPanelIndex   =   0
       Text            =   "All icons used in this project are from PixelMixers"
-      TextAlign       =   0
+      TextAlign       =   1
       TextColor       =   &c00000000
       TextFont        =   "System"
       TextSize        =   0.0
@@ -148,7 +148,7 @@ Begin Window AboutDialog
       Transparent     =   False
       Underline       =   False
       Visible         =   True
-      Width           =   331
+      Width           =   357
    End
    Begin Label Label4
       AutoDeactivate  =   True
@@ -173,7 +173,7 @@ Begin Window AboutDialog
       TabIndex        =   4
       TabPanelIndex   =   0
       Text            =   "Basic Icon Set 1 and 2 (www.pixel-mixer.com)"
-      TextAlign       =   0
+      TextAlign       =   1
       TextColor       =   &c00000000
       TextFont        =   "System"
       TextSize        =   0.0
@@ -182,7 +182,7 @@ Begin Window AboutDialog
       Transparent     =   False
       Underline       =   False
       Visible         =   True
-      Width           =   331
+      Width           =   357
    End
    Begin Label Label5
       AutoDeactivate  =   True
@@ -195,7 +195,7 @@ Begin Window AboutDialog
       Index           =   -2147483648
       InitialParent   =   ""
       Italic          =   False
-      Left            =   91
+      Left            =   117
       LockBottom      =   False
       LockedInPosition=   False
       LockLeft        =   True

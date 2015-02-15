@@ -102,23 +102,75 @@ End
 		  timingListbox.Heading(2) = "Stop"
 		  timingListbox.Heading(3) = "Hours"
 		  
+		  LoadTracking
 		End Sub
 	#tag EndEvent
 
 
 	#tag Method, Flags = &h21
+		Private Sub LoadTracking()
+		  ' save json structure to default tracking file
+		  Dim fi as FolderItem = new FolderItem("tracking.json")
+		  Dim tin as TextInputStream
+		  
+		  dim jin as JSONItem
+		  
+		  tin = TextInputStream.Open(fi)
+		  jin = new JSONItem(tin.ReadAll)
+		  
+		  tin.Close
+		  
+		  
+		  System.DebugLog jin.ToString
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Sub SaveTracking()
+		  ' convert the content of the timing listbox into json items 
+		  ' and save these to disk
+		  
+		  dim itmlist as new JSONItem  ' the root item
+		  
+		  itmlist.Compact = False
+		  itmlist.Value("Name") = "test"
+		  ' todo: define global data
+		  
+		  Dim tracking as new JSONItem  ' the time tracking jsonitem (used as array)
+		  
+		  ' now iterate through the listbox, convert all lines into items nad append 
+		  ' these to the tracking item
+		  For i as Integer = 0 To timingListbox.LastIndex
+		    Dim singleTrack As New JSONItem
+		    singleTrack.Value("StartTime") = str(timingListbox.Cell(i, 1))
+		    singleTrack.Value("StopTime") = str(timingListbox.Cell(i, 2))
+		    tracking.Append(singleTrack)
+		  Next i
+		  
+		  ' add tracking item to root item
+		  itmlist.Value("Tracks") = tracking
+		  
+		  ' save json structure to default tracking file
+		  Dim fou as FolderItem = new FolderItem("tracking.json")
+		  dim tout as TextOutputStream
+		  tout = TextOutputStream.Create(fou)
+		  tout.Write itmlist.ToString
+		  tout.Close
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
 		Private Sub TimeTracking()
 		  If trackingActive = False Then
-		    ' me.Caption = "Stop"
 		    trackingBegin = new Date()
 		    timingListbox.AddRow trackingBegin.SQLDate
 		    timingListbox.Cell(timingListbox.LastIndex, 1) = trackingBegin.LongTime
 		  Else
-		    ' me.Caption = "Start"
 		    trackingEnd = new Date()
 		    timingListbox.Cell(timingListbox.LastIndex, 2) = trackingEnd.LongTime
 		    Dim dt as Double = trackingEnd.TotalSeconds - trackingBegin.TotalSeconds
 		    timingListbox.Cell(timingListbox.LastIndex, 3) = format(dt / 3600, "#.#0")
+		    SaveTracking
 		  End If
 		  
 		  trackingActive = Not trackingActive
@@ -150,8 +202,10 @@ End
 		    TimeTracking
 		    if trackingActive = True Then
 		      item.Caption = "Stop"
+		      ToolButton(item).Icon = stop_32
 		    else
 		      item.Caption = "Start"
+		      ToolButton(item).Icon = paly_32
 		    End If
 		  Case "HelpToolButton"
 		    AboutDialog.ShowModal
