@@ -110,17 +110,12 @@ End
 	#tag Method, Flags = &h21
 		Private Sub LoadTracking()
 		  ' save json structure to default tracking file
-		  Dim fi as FolderItem = new FolderItem("tracking.json", FolderItem.PathTypeNative)
+		  Dim fi as FolderItem = new FolderItem("tracking.json")
 		  Dim tin as TextInputStream
 		  
 		  dim jin as JSONItem
 		  
-		  Try
-		    tin = TextInputStream.Open(fi)
-		  Catch e as IOException
-		    return
-		  End Try
-		  
+		  tin = TextInputStream.Open(fi)
 		  jin = new JSONItem(tin.ReadAll)
 		  
 		  tin.Close
