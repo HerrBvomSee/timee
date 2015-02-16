@@ -120,14 +120,23 @@ End
 		  
 		  tin.Close
 		  
+		  Dim tracks As JSONItem
+		  tracks = jin.Child("Tracks")
+		  
+		  For i as Integer = 0 To tracks.Count - 1
+		    timingListbox.AddRow ""
+		    timingListbox.Cell(timingListbox.LastIndex, 1) = tracks.Child(i).Value("StartTime").StringValue
+		    timingListbox.Cell(timingListbox.LastIndex, 2) = tracks.Child(i).Value("StopTime").StringValue
+		  Next i
 		  
 		  System.DebugLog jin.ToString
+		  System.DebugLog tracks.ToString
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
 		Private Sub SaveTracking()
-		  ' convert the content of the timing listbox into json items 
+		  ' convert the content of the timing listbox into json items
 		  ' and save these to disk
 		  
 		  dim itmlist as new JSONItem  ' the root item
@@ -138,7 +147,7 @@ End
 		  
 		  Dim tracking as new JSONItem  ' the time tracking jsonitem (used as array)
 		  
-		  ' now iterate through the listbox, convert all lines into items nad append 
+		  ' now iterate through the listbox, convert all lines into items nad append
 		  ' these to the tracking item
 		  For i as Integer = 0 To timingListbox.LastIndex
 		    Dim singleTrack As New JSONItem
@@ -190,6 +199,20 @@ End
 	#tag Property, Flags = &h21
 		Private trackingEnd As Date
 	#tag EndProperty
+
+	#tag ComputedProperty, Flags = &h21
+		#tag Getter
+			Get
+			  Return UnixTimestamp
+			End Get
+		#tag EndGetter
+		#tag Setter
+			Set
+			  self.UnixTimestamp = value - 2082844800
+			End Set
+		#tag EndSetter
+		Private UnixTimestamp As Integer
+	#tag EndComputedProperty
 
 
 #tag EndWindowCode

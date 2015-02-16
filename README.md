@@ -1,14 +1,15 @@
 # timee
 
+## About
 A drastically simplistic time tracking app. No bells and whistles,
 only time tracking at its bare minimum. 
 
-# Remarks
+## Copyright information
 
 The icons used in the program are taken from the free Basic Icons 1 and 2
 from PixelMixer (http://www.pixel-mixer.com)
 
-# License
+## License
 The MIT License (MIT)
 
 Copyright (c) 2015 Thomas Bass
