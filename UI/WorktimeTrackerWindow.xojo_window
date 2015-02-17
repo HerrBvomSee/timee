@@ -115,7 +115,12 @@ End
 		  
 		  dim jin as JSONItem
 		  
-		  tin = TextInputStream.Open(fi)
+		  Try
+		    tin = TextInputStream.Open(fi)
+		  Catch ex as IOException
+		    Return
+		  End Try
+		  
 		  jin = new JSONItem(tin.ReadAll)
 		  
 		  tin.Close
@@ -124,7 +129,7 @@ End
 		  tracks = jin.Child("Tracks")
 		  
 		  For i as Integer = 0 To tracks.Count - 1
-		    timingListbox.AddRow ""
+		    timingListbox.AddRow tracks.Child(i).Value("Date").StringValue
 		    timingListbox.Cell(timingListbox.LastIndex, 1) = tracks.Child(i).Value("StartTime").StringValue
 		    timingListbox.Cell(timingListbox.LastIndex, 2) = tracks.Child(i).Value("StopTime").StringValue
 		  Next i
@@ -139,7 +144,7 @@ End
 		  ' convert the content of the timing listbox into json items
 		  ' and save these to disk
 		  
-		  dim itmlist as new JSONItem  ' the root item
+		  Dim itmlist as New JSONItem  ' the root item
 		  
 		  itmlist.Compact = False
 		  itmlist.Value("Name") = "test"
@@ -151,6 +156,7 @@ End
 		  ' these to the tracking item
 		  For i as Integer = 0 To timingListbox.LastIndex
 		    Dim singleTrack As New JSONItem
+		    singleTrack.Value("Date") = str(timingListbox.Cell(i, 0))
 		    singleTrack.Value("StartTime") = str(timingListbox.Cell(i, 1))
 		    singleTrack.Value("StopTime") = str(timingListbox.Cell(i, 2))
 		    tracking.Append(singleTrack)
