@@ -108,9 +108,17 @@ End
 
 
 	#tag Method, Flags = &h21
+		Private Function DateToUTCTimestamp(d As Date) As Int64
+		  ' Converts a date into an UTC timestamp (UTC with GMT=0)
+		  d.GMTOffset = 0
+		  return d.TotalSeconds - UTCOffset
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
 		Private Sub LoadTracking()
 		  ' save json structure to default tracking file
-		  Dim fi as FolderItem = new FolderItem("tracking.json")
+		  Dim fi as FolderItem = new FolderItem(TrackingFilename)
 		  Dim tin as TextInputStream
 		  
 		  dim jin as JSONItem
@@ -129,13 +137,16 @@ End
 		  tracks = jin.Child("Tracks")
 		  
 		  For i as Integer = 0 To tracks.Count - 1
-		    timingListbox.AddRow tracks.Child(i).Value("Date").StringValue
-		    timingListbox.Cell(timingListbox.LastIndex, 1) = tracks.Child(i).Value("StartTime").StringValue
-		    timingListbox.Cell(timingListbox.LastIndex, 2) = tracks.Child(i).Value("StopTime").StringValue
+		    timingListbox.AddRow UTCTimestampToDate(tracks.Child(i).Value("StartTime").Int64Value).SQLDate
+		    timingListbox.Cell(timingListbox.LastIndex, 1) = UTCTimestampToDate(tracks.Child(i).Value("StartTime").Int64Value).LongTime
+		    timingListbox.CellTag(timingListbox.LastIndex, 1) = tracks.Child(i).Value("StartTime").Int64Value
+		    timingListbox.Cell(timingListbox.LastIndex, 2) = UTCTimestampToDate(tracks.Child(i).Value("StopTime").Int64Value).LongTime
+		    timingListbox.CellTag(timingListbox.LastIndex, 2) = tracks.Child(i).Value("StopTime").Int64Value
 		  Next i
 		  
-		  System.DebugLog jin.ToString
-		  System.DebugLog tracks.ToString
+		  ' jump to last item
+		  timingListbox.ScrollPosition = timingListbox.LastIndex
+		  
 		End Sub
 	#tag EndMethod
 
@@ -152,13 +163,12 @@ End
 		  
 		  Dim tracking as new JSONItem  ' the time tracking jsonitem (used as array)
 		  
-		  ' now iterate through the listbox, convert all lines into items nad append
+		  ' now iterate through the listbox, convert all lines into items and append
 		  ' these to the tracking item
 		  For i as Integer = 0 To timingListbox.LastIndex
 		    Dim singleTrack As New JSONItem
-		    singleTrack.Value("Date") = str(timingListbox.Cell(i, 0))
-		    singleTrack.Value("StartTime") = str(timingListbox.Cell(i, 1))
-		    singleTrack.Value("StopTime") = str(timingListbox.Cell(i, 2))
+		    singleTrack.Value("StartTime") = timingListbox.CellTag(i, 1).Int64Value
+		    singleTrack.Value("StopTime") = timingListbox.CellTag(i, 2).Int64Value
 		    tracking.Append(singleTrack)
 		  Next i
 		  
@@ -166,7 +176,7 @@ End
 		  itmlist.Value("Tracks") = tracking
 		  
 		  ' save json structure to default tracking file
-		  Dim fou as FolderItem = new FolderItem("tracking.json")
+		  Dim fou as FolderItem = new FolderItem(TrackingFilename)
 		  dim tout as TextOutputStream
 		  tout = TextOutputStream.Create(fou)
 		  tout.Write itmlist.ToString
@@ -180,17 +190,36 @@ End
 		    trackingBegin = new Date()
 		    timingListbox.AddRow trackingBegin.SQLDate
 		    timingListbox.Cell(timingListbox.LastIndex, 1) = trackingBegin.LongTime
+		    timingListbox.CellTag(timingListbox.LastIndex, 1) = DateToUTCTimestamp(trackingBegin)
+		    timingListbox.ScrollPosition = timingListbox.LastIndex
 		  Else
 		    trackingEnd = new Date()
 		    timingListbox.Cell(timingListbox.LastIndex, 2) = trackingEnd.LongTime
+		    timingListbox.CellTag(timingListbox.LastIndex, 2) = DateToUTCTimestamp(trackingEnd)
 		    Dim dt as Double = trackingEnd.TotalSeconds - trackingBegin.TotalSeconds
 		    timingListbox.Cell(timingListbox.LastIndex, 3) = format(dt / 3600, "#.#0")
+		    
 		    SaveTracking
 		  End If
 		  
 		  trackingActive = Not trackingActive
 		  
+		  
 		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Function UTCTimestampToDate(timestamp As Int64) As Date
+		  Dim d As New Date
+		  Dim gmt_offset as Integer = d.GMTOffset
+		  ' set gmt offset to zero for UTC timestamp
+		  d.GMTOffset = 0
+		  d.TotalSeconds = timestamp + UTCOffset
+		  ' reset to stored local timezone
+		  d.GMTOffset = gmt_offset
+		  Return d
+		  
+		End Function
 	#tag EndMethod
 
 
@@ -206,19 +235,12 @@ End
 		Private trackingEnd As Date
 	#tag EndProperty
 
-	#tag ComputedProperty, Flags = &h21
-		#tag Getter
-			Get
-			  Return UnixTimestamp
-			End Get
-		#tag EndGetter
-		#tag Setter
-			Set
-			  self.UnixTimestamp = value - 2082844800
-			End Set
-		#tag EndSetter
-		Private UnixTimestamp As Integer
-	#tag EndComputedProperty
+
+	#tag Constant, Name = TrackingFilename, Type = String, Dynamic = False, Default = \"timetracks.json", Scope = Private
+	#tag EndConstant
+
+	#tag Constant, Name = UTCOffset, Type = Double, Dynamic = False, Default = \"2082844800", Scope = Private
+	#tag EndConstant
 
 
 #tag EndWindowCode
